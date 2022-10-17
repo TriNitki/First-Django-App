@@ -1,6 +1,3 @@
-from enum import auto
-from tabnanny import verbose
-from unittest.util import _MAX_LENGTH
 from django.db import models
 
 class Topic(models.Model):
@@ -12,7 +9,7 @@ class Topic(models.Model):
         return self.text
 
 class Entry(models.Model):
-    '''LEarned information by user about theme'''
+    '''Learned information by user about theme'''
     topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
     text = models.TextField()
     date_added = models.DateTimeField(auto_now_add=True)
