@@ -93,3 +93,4 @@ def check_topic_owner(owner, request):
     # Checks for owner of the topic
     if owner != request:
         raise Http404
+    
