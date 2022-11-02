@@ -1,1 +1,1 @@
-web: gunicorn ullie_diary.wsgi --log-file -
+web: gunicorn learning_logs.wsgi --log-file -
