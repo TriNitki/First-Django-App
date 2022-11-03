@@ -21,3 +21,6 @@ urlpatterns = [
     path('', include('learning_logs.urls')),
     path('users/', include('users.urls')),
 ]
+
+handler404 = 'learning_logs.views.handler404'
+handler500 = 'learning_logs.views.handler500'

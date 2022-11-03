@@ -9,18 +9,20 @@ def index(request):
     '''Home page of Learning Log'''
     return render(request, 'learning_logs/index.html')
 
+@login_required
 def topics(request):
     '''Displays list of topics'''
-    topics = Topic.objects.filter(owner=request.user).order_by('date_added')
+    topics = Topic.objects.order_by('date_added')
     context = {'topics': topics}
     return render(request, 'learning_logs/topics.html', context)
 
+@login_required
 def topic(request, topic_id):
     '''Displays only one topic and all its entries'''
     topic = Topic.objects.get(id=topic_id)
 
     # Checks if the topic is owned by current user
-    check_topic_owner(topic.owner, request.user)
+    # check_topic_owner(topic.owner, request.user)
     
     entries = topic.entry_set.order_by('-date_added')
     context = {'topic': topic, 'entries': entries}
@@ -50,7 +52,7 @@ def new_entry(request, topic_id):
     '''Adds new entry about specific topic'''
     topic = Topic.objects.get(id=topic_id)
 
-    check_topic_owner(topic.owner, request.user)
+    # check_topic_owner(topic.owner, request.user)
     
     if request.method != 'POST':
         # Data isn't sent; Creates blanck form
@@ -60,6 +62,7 @@ def new_entry(request, topic_id):
         form = EntryForm(data=request.POST)
         if form.is_valid():
             new_entry = form.save(commit=False)
+            new_entry.owner = request.user
             new_entry.topic = topic
             new_entry.save()
             return redirect('learning_logs:topic', topic_id=topic_id)
@@ -74,7 +77,7 @@ def edit_entry(request, entry_id):
     entry = Entry.objects.get(id=entry_id)
     topic = entry.topic
 
-    check_topic_owner(topic.owner, request.user)
+    check_entry_owner(entry.owner, request.user)
 
     if request.method != 'POST':
         # Oroginal request; form is filling with a data of this entry
@@ -90,7 +93,17 @@ def edit_entry(request, entry_id):
     return render(request, 'learning_logs/edit_entry.html', context)
 
 def check_topic_owner(owner, request):
-    # Checks for owner of the topic
+    # Checks for the owner of the topic
     if owner != request:
         raise Http404
     
+def check_entry_owner(owner, request):
+    # Checks for the owner of the entry
+    if owner != request:
+        raise Http404
+
+def handler404(request, exception=None):
+    return render(request, "learning_logs/404.html")
+
+def handler500(request, exception=None):
+    return render(request, "learning_logs/500.html")

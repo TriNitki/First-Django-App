@@ -1,0 +1,11 @@
+{% extends 'learning_logs/base.html' %}
+
+{% block page_header %}
+<h2>ERROR: Not found /500/</h2>
+{% endblock page_header %}
+
+{% block content %}
+<div>
+    <strong><a href="{% url 'learning_logs:index' %}">Click here to return to the homepage</a></strong>
+</div>
+{% endblock content %}

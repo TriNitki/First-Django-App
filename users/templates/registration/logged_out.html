@@ -1,5 +1,9 @@
 {% extends 'learning_logs/base.html' %}
 
+{% block page_header %}
+  <h2>You have been logged out. Thank you for visiting!</h2>
+{% endblock page_header %}
+
 {% block content %}
-  <p>You have been logged out. Thank you for visiting!</p>
+  <h4><a href="{% url 'users:login' %}">>Log in again!</a></h4>
 {% endblock content %}
