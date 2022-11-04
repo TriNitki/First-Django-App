@@ -12,16 +12,19 @@
 {% for entry in entries %}
   <div class="card mb-3">
     <h4 class="card-header">
-      {{ entry.date_added|date:'M d, Y H:i' }} 
-      <small><a href="{% url 'learning_logs:edit_entry' entry.id%}">edit entry</a></small>
+      by {{ entry.owner }}
     </h4>
     <div class='card-body'>
       {{ entry.text|linebreaks }}
-      <footer class="blockquote-footer"><cite title="Source Title">{{ entry.owner }}</cite></footer>
+      <footer class="blockquote-footer ">
+        <cite title="Date">{{ entry.date_added|date:'M d, Y H:i' }} </cite>
+        {% if entry in owned_entries %}
+          <small class="text-end"><a href="{% url 'learning_logs:edit_entry' entry.id%}">edit entry</a></small>
+        {% endif %}
+      </footer>
     </div>
   </div>
 {% empty %}
   <p>There are no entries for this topic yet!</p>
 {% endfor %}
-
 {% endblock content %}
