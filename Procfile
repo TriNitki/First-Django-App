@@ -1,1 +1,1 @@
-web: gunicorn learning.wsgi --log-file -
+web: gunicorn -b 0.0.0.0:8000 learning_logs:application --log-file -
