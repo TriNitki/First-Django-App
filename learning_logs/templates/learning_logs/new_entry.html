@@ -9,7 +9,7 @@
     <h5>Add a new entry:</h5>
   </div>
   <div>
-    <form action="{% url 'learning_logs:new_entry' topic.id %}" method="post">
+    <form action="{% url 'learning_logs:new_entry' topic.id %}" method="post" enctype="multipart/form-data">
       {% csrf_token %}
       {{ form.as_p }}
       <button type="submit" class="btn btn-primary">Add entry</button>

@@ -18,8 +18,8 @@ class TopicForm(forms.ModelForm):
 class EntryForm(forms.ModelForm):
     class Meta:
         model = Entry
-        fields = ['text']
-        labels = {'text': ''}
+        fields = ('text', 'image')
+        labels = {'text': '', 'image': ''}
         widgets = {
             'text': forms.Textarea(attrs={
                 'class': 'form-control mb-3',

@@ -16,6 +16,9 @@
     </h4>
     <div class='card-body'>
       {{ entry.text|linebreaks }}
+      {% if entry.image and entry.image != "0" %}
+      <img src="{{ entry.image.url}}" alt="connect" style="max-height:300px">
+      {% endif %}
       <footer class="blockquote-footer ">
         <cite title="Date">{{ entry.date_added|date:'M d, Y H:i' }} </cite>
         {% if entry in owned_entries %}
