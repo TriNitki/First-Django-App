@@ -24,8 +24,6 @@ def topic(request, topic_id):
     # Checks if the topic is owned by current user
     # check_topic_owner(topic.owner, request.user)
     entries = topic.entry_set.order_by('-date_added')
-    for entry in entries:
-        print(entry.image)
     owned_entries = topic.entry_set.filter(owner=request.user).order_by('-date_added')
     context = {'topic': topic, 'entries': entries, 'owned_entries': owned_entries}
     return render(request, 'learning_logs/topic.html', context)
@@ -62,7 +60,6 @@ def new_entry(request, topic_id):
     else:
         # Displays POST data; Processes data
         form = EntryForm(request.POST, request.FILES)
-        print(form.is_valid())
         if form.is_valid():
             new_entry = form.save(commit=False)
             new_entry.owner = request.user
@@ -87,7 +84,7 @@ def edit_entry(request, entry_id):
         form = EntryForm(instance=entry)
     else:
         # Sending POST data; Processing data
-        form = EntryForm(instance=entry, data=request.POST)
+        form = EntryForm(files=request.FILES, data=request.POST, instance=entry)
         if form.is_valid():
             form.save()
             return redirect('learning_logs:topic', topic_id=topic.id)

@@ -9,10 +9,15 @@
     <h5>Edit entry:</h5>
   </div>
   <div>
-    <form action="{% url 'learning_logs:edit_entry' entry.id %}" method="post">
+    <form action="{% url 'learning_logs:edit_entry' entry.id %}" method="post" enctype="multipart/form-data">
       {% csrf_token %}
       {{ form.as_p }}
       <button type="submit" class="btn btn-primary">Save changes</button>
     </form>
+  </div>
+  <div class="mb-3">
+  </div>
+  <div class="mb-3">
+    <img src="{{ entry.image.url}}" alt="connect" style="max-height:300px">
   </div>
 {% endblock content %}
