@@ -24,6 +24,11 @@ class EntryForm(forms.ModelForm):
             'text': forms.Textarea(attrs={
                 'class': 'form-control mb-3',
                 'placeholder': 'Fill a new entry',
-                'cols': 80,
-            })
+                'cols': 80
+            }),
+            'image': forms.FileInput(attrs={
+                'class': 'form-control',
+                'type': 'file',
+                'id': 'formFile',
+            }),
         }

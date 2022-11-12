@@ -1,3 +1,5 @@
+import os
+
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required 
 from django.http import Http404
@@ -24,8 +26,11 @@ def topic(request, topic_id):
     # Checks if the topic is owned by current user
     # check_topic_owner(topic.owner, request.user)
     entries = topic.entry_set.order_by('-date_added')
+
+    saved_images = saved_image_checker()
+
     owned_entries = topic.entry_set.filter(owner=request.user).order_by('-date_added')
-    context = {'topic': topic, 'entries': entries, 'owned_entries': owned_entries}
+    context = {'topic': topic, 'entries': entries, 'owned_entries': owned_entries, 'saved_images': saved_images}
     return render(request, 'learning_logs/topic.html', context)
 
 @login_required
@@ -76,8 +81,10 @@ def edit_entry(request, entry_id):
     '''Edits edits'''
     entry = Entry.objects.get(id=entry_id)
     topic = entry.topic
-
+    
     check_entry_owner(entry.owner, request.user)
+
+    saved_images = saved_image_checker()
 
     if request.method != 'POST':
         # Oroginal request; form is filling with a data of this entry
@@ -89,7 +96,7 @@ def edit_entry(request, entry_id):
             form.save()
             return redirect('learning_logs:topic', topic_id=topic.id)
 
-    context = {'entry': entry, 'topic': topic, 'form': form}
+    context = {'entry': entry, 'topic': topic, 'form': form, 'saved_images': saved_images}
     return render(request, 'learning_logs/edit_entry.html', context)
 
 def check_topic_owner(owner, request):
@@ -107,3 +114,9 @@ def handler404(request, exception=None):
 
 def handler500(request, exception=None):
     return render(request, "learning_logs/500.html")
+
+def saved_image_checker():
+    '''Gets list of saved images of the server and returnes it'''
+    dirname = "media\images"
+    saved_images = [f"images/{image}" for image in os.listdir(dirname)]
+    return saved_images
