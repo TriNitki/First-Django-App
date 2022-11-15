@@ -3,9 +3,10 @@ from django.contrib.auth.models import User
 
 class Topic(models.Model):
     '''Topic which user is learning'''
-    text = models.CharField(max_length = 200)
+    text = models.CharField(max_length = 20)
     date_added = models.DateTimeField(auto_now_add=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    descr = models.TextField()
 
     def __str__(self) -> str:
         return self.text
@@ -13,10 +14,10 @@ class Topic(models.Model):
 class Entry(models.Model):
     '''Learned information by user about theme'''
     topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
-    text = models.TextField()
+    text = models.TextField(blank=True)
     date_added = models.DateTimeField(auto_now_add=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='images')
+    image = models.ImageField(upload_to='images', blank=True)
 
     class Meta:
         verbose_name_plural = 'entries'

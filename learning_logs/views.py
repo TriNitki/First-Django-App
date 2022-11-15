@@ -53,6 +53,21 @@ def new_topic(request):
     return render(request, 'learning_logs/new_topic.html', context)
 
 @login_required
+def edit_topic(request, topic_id):
+    topic = Topic.objects.get(id=topic_id)
+
+    if request.method != 'POST':
+        form = TopicForm(instance=topic)
+    else:
+        form = TopicForm(data=request.POST, instance=topic)
+        if form.is_valid():
+            form.save()
+            return redirect('learning_logs:topics')
+    
+    context = {'topic': topic, 'form': form}
+    return render(request, 'learning_logs/edit_topic.html', context)
+
+@login_required
 def new_entry(request, topic_id):
     '''Adds new entry about specific topic'''
     topic = Topic.objects.get(id=topic_id)

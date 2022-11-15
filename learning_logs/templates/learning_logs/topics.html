@@ -5,16 +5,33 @@
 {% endblock page_header %}
 
 {% block content %}
-  <ul>
-      {% for topic in topics %}
-      <li><h3>
-        <a href="{% url 'learning_logs:topic' topic.id %}">{{ topic }}</a>
-      </h3></li>
-      {% empty %}
-        <li><h3>No topics have been added yet!</h3></li>
-      {% endfor %}
-  </ul>
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for topic in topics %}
+      <div class="col">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title"><a href="{% url 'learning_logs:topic' topic.id %}">{{ topic }}</a></h5>
+            {% if topic.descr != "0" %}
+              <p class="card-text">
+                {{ topic.descr }}
+              </p>
+            {% endif %}
+          </div>
+          {% if user.is_superuser %}
+            <div class="card-footer">
+              <small class="text-muted"><a href="{% url 'learning_logs:edit_topic' topic.id %}">Edit this topic</a></small>
+            </div>
+          {% endif %}
+        </div>
+        <p></p>
+      </div>
+    {% empty %}
+      <li><h3>No topics have been added yet!</h3></li>
+    {% endfor %}
+  </div>
 
-  <h3><a href="{% url 'learning_logs:new_topic' %}">Add a new topic:</h3></a>
+  {% if user.is_superuser %}
+    <h3><a href="{% url 'learning_logs:new_topic' %}">Add a new topic:</h3></a>
+  {% endif %}
 
 {% endblock content %}
