@@ -23,10 +23,14 @@
         </div>
       {% endif %}
 
-      <p></p>
       <div>
         <button type="submit" class="btn btn-primary">Save changes</button>
       </div>
+    </form>
+    <p></p>
+    <form action="{% url 'learning_logs:delete_entry' entry.id %}" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger">Delete entry</button>
     </form>
   </div>
 {% endblock content %}

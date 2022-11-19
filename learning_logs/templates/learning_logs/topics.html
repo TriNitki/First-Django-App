@@ -9,8 +9,10 @@
     {% for topic in topics %}
       <div class="col">
         <div class="card">
+          <div class="card-header">
+            <h5 class="card-text"><a href="{% url 'learning_logs:topic' topic.id %}">{{ topic }}</a></h5>
+          </div>
           <div class="card-body">
-            <h5 class="card-title"><a href="{% url 'learning_logs:topic' topic.id %}">{{ topic }}</a></h5>
             {% if topic.descr != "0" %}
               <p class="card-text">
                 {{ topic.descr }}

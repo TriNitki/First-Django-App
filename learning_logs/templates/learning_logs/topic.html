@@ -1,4 +1,5 @@
 {% extends 'learning_logs/base.html' %}
+{% load embed_video_tags %}
 
 {% block page_header %}
   <h3>{{ topic }}</h3>
@@ -25,14 +26,18 @@
         </div>
         <div class="col-md-8">
           <div class="card-body">
-            <p>{{ entry.text|linebreaks }}</p>
+            {% if entry.url and entry.url != "0" %}
+              {% video entry.url '426x240' %}
+            {% else %}
+              <p>{{ entry.text|linebreaks }}</p>
+            {% endif %}
           </div>
         </div>
       </div>
       <div class="mb-3" style="margin-left:20px;">
         <footer class="blockquote-footer ">
           <cite title="Date">{{ entry.date_added|date:'M d, Y H:i' }} </cite>
-          {% if entry in owned_entries %}
+          {% if entry in owned_entries or user.is_superuser%}
             <small><a href="{% url 'learning_logs:edit_entry' entry.id%}">edit entry</a></small>
           {% endif %}
         </footer>
@@ -44,7 +49,11 @@
         by {{ entry.owner }}
       </h4>
       <div class="card-body">
-        <p>{{ entry.text|linebreaks }}</p>
+        {% if entry.url and entry.url != "0" %}
+          {% video entry.url '426x240' %}
+        {% else %}
+          <p>{{ entry.text|linebreaks }}</p>
+        {% endif %}
       </div>
       <div class="mb-3" style="margin-left:20px;">
         <footer class="blockquote-footer ">

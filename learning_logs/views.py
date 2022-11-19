@@ -7,6 +7,11 @@ from django.http import Http404
 from .models import Topic, Entry
 from .forms import TopicForm, EntryForm
 
+allowed_urls = [
+    'https://www.youtube.com/',
+    'https://youtu.be/',
+]
+
 def index(request):
     '''Home page of Learning Log'''
     return render(request, 'learning_logs/index.html')
@@ -23,8 +28,6 @@ def topic(request, topic_id):
     '''Displays only one topic and all its entries'''
     topic = Topic.objects.get(id=topic_id)
 
-    # Checks if the topic is owned by current user
-    # check_topic_owner(topic.owner, request.user)
     entries = topic.entry_set.order_by('-date_added')
 
     saved_images = saved_image_checker()
@@ -36,6 +39,8 @@ def topic(request, topic_id):
 @login_required
 def new_topic(request):
     '''Defines new topic'''
+    check_is_superuser(request.user)
+
     if request.method != 'POST':
         # Data isn't sent; creates blanck form
         form = TopicForm()
@@ -56,6 +61,8 @@ def new_topic(request):
 def edit_topic(request, topic_id):
     topic = Topic.objects.get(id=topic_id)
 
+    check_is_superuser(request.user)
+    
     if request.method != 'POST':
         form = TopicForm(instance=topic)
     else:
@@ -72,7 +79,6 @@ def new_entry(request, topic_id):
     '''Adds new entry about specific topic'''
     topic = Topic.objects.get(id=topic_id)
 
-    # check_topic_owner(topic.owner, request.user)
     
     if request.method != 'POST':
         # Data isn't sent; Creates blanck form
@@ -80,10 +86,15 @@ def new_entry(request, topic_id):
     else:
         # Displays POST data; Processes data
         form = EntryForm(request.POST, request.FILES)
-        if form.is_valid():
+        if form.is_valid() and (form.clean()['text'] != '' or form.clean()['image'] != None):
             new_entry = form.save(commit=False)
             new_entry.owner = request.user
             new_entry.topic = topic
+
+            if any([url in new_entry.text for url in allowed_urls]):
+                new_entry.url = new_entry.text
+                new_entry.text = ''
+
             new_entry.save()
             return redirect('learning_logs:topic', topic_id=topic_id)
     
@@ -107,21 +118,28 @@ def edit_entry(request, entry_id):
     else:
         # Sending POST data; Processing data
         form = EntryForm(files=request.FILES, data=request.POST, instance=entry)
-        if form.is_valid():
+        if form.is_valid() and (form.clean()['text'] != '' or form.clean()['image'] != None):
             form.save()
             return redirect('learning_logs:topic', topic_id=topic.id)
 
     context = {'entry': entry, 'topic': topic, 'form': form, 'saved_images': saved_images}
     return render(request, 'learning_logs/edit_entry.html', context)
 
-def check_topic_owner(owner, request):
-    # Checks for the owner of the topic
-    if owner != request:
+def delete_entry(request, entry_id):
+    entry = Entry.objects.get(id=entry_id)
+    topic = entry.topic
+
+    entry.delete()
+    return redirect('learning_logs:topic', topic_id=topic.id)
+
+def check_is_superuser(user):
+    # Checks is the user is superuser
+    if not(user.is_superuser):
         raise Http404
     
-def check_entry_owner(owner, request):
+def check_entry_owner(owner, user):
     # Checks for the owner of the entry
-    if owner != request:
+    if owner != user and not(user.is_superuser):
         raise Http404
 
 def handler404(request, exception=None):

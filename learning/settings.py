@@ -45,6 +45,7 @@ INSTALLED_APPS = [
 
     # Third party apps
     "bootstrap4",
+    "embed_video",
 ]
 
 MIDDLEWARE = [
