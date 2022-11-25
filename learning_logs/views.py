@@ -62,7 +62,7 @@ def edit_topic(request, topic_id):
     topic = Topic.objects.get(id=topic_id)
 
     check_is_superuser(request.user)
-    
+
     if request.method != 'POST':
         form = TopicForm(instance=topic)
     else:
@@ -153,3 +153,16 @@ def saved_image_checker():
     dirname = "media\images"
     saved_images = [f"images/{image}" for image in os.listdir(dirname)]
     return saved_images
+
+# test section
+import json
+from django.views.generic import ListView
+
+class InfoListView(ListView):
+    model = Topic
+    template_name = 'learning_logs/search_test.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["qs_json"] = json.dumps(list(Topic.objects.values('id', 'text', 'descr')))
+        return context

@@ -3,6 +3,7 @@
 from django.urls import path
 
 from . import views
+from .views import InfoListView
 
 app_name = 'learning_logs'
 urlpatterns = [
@@ -14,4 +15,5 @@ urlpatterns = [
     path('edit_entry/<int:entry_id>/', views.edit_entry, name='edit_entry'), # Page for editing entries
     path('edit_topic/<int:topic_id>/', views.edit_topic, name='edit_topic'),
     path('delete_entry/<int:entry_id>/', views.delete_entry, name='delete_entry'),
+    path('search_test/', InfoListView.as_view(), name='main-view'),
 ]

@@ -1,0 +1,44 @@
+{% extends 'learning_logs/base_test.html' %}
+
+{% block title %}
+home
+{% endblock title %}
+
+{% block content %}
+    <input id="search_here" class="form-control mb-3" placeholder="type here to search.." />
+    <div id="box">
+        {% for item in object_list %}
+            <a href="{% url 'learning_logs:topic' item.id %}">{{item}}</a><br>
+        {% endfor %}
+    </div>
+{% endblock content %}
+
+{% block scripts %}
+<script>
+    const data = '{{qs_json}}'
+    console.log(data)
+
+    const rdata = JSON.parse(data.replace(/&quot;/g, '"'))
+    console.log(rdata)
+
+    const input = document.getElementById('search_here')
+    console.log(input)
+
+    let filteredArr = []
+
+    input.addEventListener('keyup', (e)=>{
+        box.innerHTML = ""
+        filteredArr = rdata.filter(info=> info['text'].includes(e.target.value))
+        if (filteredArr.length > 0){
+            filteredArr.map(info=>{
+                box.innerHTML += `<a href="/topics/${info['id']}">${info['text']}</a><br>`
+                console.log(`${info['id']}`)
+            })
+        } else {
+            box.innerHTML = "<b>No results found...</b>"
+        }
+        console.log(box.innerHTML)
+    })
+
+</script>
+{% endblock scripts %}
